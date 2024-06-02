@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.6'
 	id 'io.spring.dependency-management' version '1.1.5'
-	id("com.diffplug.spotless") version "6.24.0"
+	id 'com.diffplug.spotless' version '6.24.0'
 }
 
 group = 'com.example'
@@ -17,14 +17,15 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	// implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	// testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
@@ -33,13 +34,15 @@ tasks.named('test') {
 
 spotless {
     // masterブランチとの差分にだけspotlessを適用する
-    ratchetFrom 'origin/master'
-
+    ratchetFrom 'origin/main'
     java {
         trimTrailingWhitespace()
         endWithNewline()
-        removeUnusedImports()
-        importOrder()
+        removeUnusedImports()  // 不要なimport削除
+        importOrder("com", "java","jakarta", "org")
+
+        // googleJavaFormatを適用する
+        googleJavaFormat()
 
         // prettierrc.ymlから設定項目を読みprettierを適用する
         prettier().configFile("./.prettierrc.yml")
