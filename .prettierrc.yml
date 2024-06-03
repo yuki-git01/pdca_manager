@@ -1,0 +1,12 @@
+plugins:
+  # プラグインを適用
+  - prettier-plugin-java
+# optional: 最大幅の設定
+printWidth: 140
+useTabs: false
+semi: true
+singleQuote: false
+overrides:
+  - files: "*.java"
+    options:
+      parser: java

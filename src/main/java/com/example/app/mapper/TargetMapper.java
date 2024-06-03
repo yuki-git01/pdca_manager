@@ -9,4 +9,5 @@ import com.example.app.entity.Target;
 @Mapper
 public interface TargetMapper {
   public List<Target> findAll();
+
 }

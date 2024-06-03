@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.6'
 	id 'io.spring.dependency-management' version '1.1.5'
-	id 'com.diffplug.spotless' version '6.24.0'
 }
 
 group = 'com.example'
@@ -32,22 +31,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-spotless {
-    // masterブランチとの差分にだけspotlessを適用する
-    ratchetFrom 'origin/main'
-    java {
-        trimTrailingWhitespace()
-        endWithNewline()
-        removeUnusedImports()  // 不要なimport削除
-        importOrder("com", "java","jakarta", "org")
-
-        // googleJavaFormatを適用する
-        googleJavaFormat()
-
-			  target "src/**/*.java"
-        // prettierrc.ymlから設定項目を読みprettierを適用する
-        prettier().configFile("./prettier.config.js")
-    }
 }
