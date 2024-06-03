@@ -7,6 +7,7 @@ public class Target {
   private Integer userId;
   private String title;
   private String description;
+  private String progress;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
 
@@ -40,6 +41,14 @@ public class Target {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getProgress() {
+    return progress;
+  }
+
+  public void setProgress(String progress) {
+    this.progress = progress;
   }
 
   public LocalDateTime getCreatedAt() {

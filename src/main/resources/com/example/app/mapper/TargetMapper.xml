@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapperタグでMapperインターフェースと紐づける -->
+<mapper namespace="com.example.app.mapper.TargetMapper">
+	<resultMap type="com.example.app.entity.Target" id="TargetMap">
+		<id column="ID" property="id" />
+		<result column="USER_ID" property="userId" />
+		<result column="TITLE" property="title" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="PROGRESS" property="progress" />
+		<result column="CREATED_AT" property="createdAt" />
+		<result column="DELETED_AT" property="deletedAt" />
+	</resultMap>
+
+  <select  id="findAll" resultMap="TargetMap">
+  SELECT * FROM TARGETS
+  </select>
+</mapper>
