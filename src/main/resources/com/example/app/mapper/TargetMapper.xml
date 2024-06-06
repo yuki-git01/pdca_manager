@@ -14,7 +14,19 @@
 		<result column="DELETED_AT" property="deletedAt" />
 	</resultMap>
 
-  <select  id="findAll" resultMap="TargetMap">
-  SELECT * FROM TARGETS
+  <select  id="findDeletedAtIsNull" resultMap="TargetMap">
+  SELECT * FROM TARGETS WHERE DELETED_AT IS NULL
   </select>
+	<select  id="findById" resultMap="TargetMap">
+  SELECT * FROM TARGETS WHERE ID = #{id}
+  </select>
+	<insert id="insert"  useGeneratedKeys="true" keyColumn="ID" keyProperty="id">
+		INSERT INTO TARGETS (ID, USER_ID, TITLE, DESCRIPTION, PROGRESS, CREATED_AT) VALUES (TARGET_ID_SEQ.nextval, #{userId}, #{title}, #{description}, #{progress}, #{createdAt})
+	</insert>
+	<update id="update">
+		UPDATE TARGETS SET TITLE = #{title}, DESCRIPTION = #{description}, PROGRESS = #{progress} WHERE ID = #{id}
+	</update>
+	<update id="delete">
+		UPDATE TARGETS SET DELETED_AT = #{deletedAt} WHERE ID = #{id}
+	</update>
 </mapper>
