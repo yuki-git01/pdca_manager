@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- mapperタグでMapperインターフェースと紐づける -->
 <mapper namespace="com.example.app.mapper.TargetMapper">
 	<resultMap type="com.example.app.entity.Target" id="TargetMap">
@@ -9,24 +7,34 @@
 		<result column="USER_ID" property="userId" />
 		<result column="TITLE" property="title" />
 		<result column="DESCRIPTION" property="description" />
-		<result column="PROGRESS" property="progress" />
-		<result column="CREATED_AT" property="createdAt" />
-		<result column="DELETED_AT" property="deletedAt" />
+		<result column="LAST_UPDATED" property="lastUpdated" />
+		<association property="progress" javaType="com.example.app.entity.Progress">
+			<id column="P_ID" property="id" />
+			<result column="STATUS" property="status" />
+		</association>
 	</resultMap>
 
-  <select  id="findDeletedAtIsNull" resultMap="TargetMap">
-  SELECT * FROM TARGETS WHERE DELETED_AT IS NULL
+  <select id="findAllTargetListByUserId" resultMap="TargetMap">
+  SELECT
+	T.ID
+	,T.TITLE
+	,T.DESCRIPTION
+	,T.LAST_UPDATED
+	,P.ID AS P_ID
+	,P.STATUS
+	FROM TARGETS T
+	INNER JOIN
+	PROGRESES P
+	ON T.PROGRESS_ID = P.ID
+	WHERE USER_ID = #{userId}
   </select>
-	<select  id="findById" resultMap="TargetMap">
-  SELECT * FROM TARGETS WHERE ID = #{id}
-  </select>
-	<insert id="insert"  useGeneratedKeys="true" keyColumn="ID" keyProperty="id">
-		INSERT INTO TARGETS (ID, USER_ID, TITLE, DESCRIPTION, PROGRESS, CREATED_AT) VALUES (TARGET_ID_SEQ.nextval, #{userId}, #{title}, #{description}, #{progress}, #{createdAt})
+	<insert id="insert" useGeneratedKeys="true" keyColumn="ID" keyProperty="id">
+		INSERT INTO TARGETS (ID, USER_ID, TITLE, DESCRIPTION, PROGRESS_ID, LAST_UPDATED) VALUES (TARGET_ID_SEQ.nextval, #{userId}, #{title}, #{description}, #{progress.id}, #{lastUpdated})
 	</insert>
 	<update id="update">
-		UPDATE TARGETS SET TITLE = #{title}, DESCRIPTION = #{description}, PROGRESS = #{progress} WHERE ID = #{id}
+		UPDATE TARGETS SET TITLE = #{title}, DESCRIPTION = #{description}, PROGRESS_ID = #{progress.id}, LAST_UPDATED = #{lastUpdated} WHERE ID = #{id}
 	</update>
-	<update id="delete">
-		UPDATE TARGETS SET DELETED_AT = #{deletedAt} WHERE ID = #{id}
-	</update>
+	<delete id="delete">
+		DELETE FROM TARGETS WHERE ID = #{id}
+	</delete>
 </mapper>

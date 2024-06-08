@@ -1,7 +1,6 @@
 package com.example.app.mapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,14 +8,12 @@ import com.example.app.entity.Target;
 
 @Mapper
 public interface TargetMapper {
-  public List<Target> findDeletedAtIsNull();
+  public List<Target> findAllTargetListByUserId(Integer userId);
 
-  public Optional<Target> findById(Integer id);
+  public void insert(Target target);
 
-  public int insert(Target target);
+  public void update(Target target);
 
-  public int update(Target target);
-
-  public int delete(Target target);
+  public void delete(Integer userId, Integer id);
 
 }

@@ -7,9 +7,8 @@ public class Target {
   private Integer userId;
   private String title;
   private String description;
-  private String progress;
-  private LocalDateTime createdAt;
-  private LocalDateTime deletedAt;
+  private Progress progress;
+  private LocalDateTime lastUpdated;
 
   public Integer getId() {
     return id;
@@ -43,28 +42,20 @@ public class Target {
     this.description = description;
   }
 
-  public String getProgress() {
+  public Progress getProgress() {
     return progress;
   }
 
-  public void setProgress(String progress) {
+  public void setProgress(Progress progress) {
     this.progress = progress;
   }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
+  public LocalDateTime getLastUpdated() {
+    return lastUpdated;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public LocalDateTime getDeletedAt() {
-    return deletedAt;
-  }
-
-  public void setDeletedAt(LocalDateTime deletedAt) {
-    this.deletedAt = deletedAt;
+  public void setLastUpdated(LocalDateTime lastUpdated) {
+    this.lastUpdated = lastUpdated;
   }
 
 }

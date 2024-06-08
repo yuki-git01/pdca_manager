@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.app.entity.Progress;
 import com.example.app.entity.Target;
 import com.example.app.mapper.TargetMapper;
 
@@ -21,40 +22,49 @@ public class TargetService {
     this.targetMapper = targetMapper;
   }
 
-  public List<Target> findDeletedAtIsNull() {
-    return this.targetMapper.findDeletedAtIsNull();
+  public List<Target> findAllTargetListByUserId(Integer userId) {
+    List<Target> targetList = this.targetMapper.findAllTargetListByUserId(userId);
+    if (targetList.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found");
+    }
+    return targetList;
   }
 
-  public Target findById(Integer id) {
-    Optional<Target> target = this.targetMapper.findById(id);
+  public Target findTargetByIdAndUserId(Integer userId, Integer id) {
+    List<Target> targetList = this.findAllTargetListByUserId(userId);
+    Optional<Target> target = targetList.stream().filter(listInTarget -> listInTarget.getId() == id).findAny();
     if (!target.isPresent()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found");
     }
     return target.get();
   }
 
-  public Integer create(Integer userId, String title, String description) {
+  public void save(Integer userId, String title, String description) {
     Target target = new Target();
-    String progress = "0%";
+    Progress progress = new Progress();
+    progress.setId(0);
     target.setUserId(userId);
     target.setTitle(title);
     target.setDescription(description);
     target.setProgress(progress);
-    target.setCreatedAt(LocalDateTime.now());
-    return this.targetMapper.insert(target);
+    target.setLastUpdated(LocalDateTime.now());
+    this.targetMapper.insert(target);
   }
 
-  public Integer updateById(Integer id, String title, String description, String progress) {
-    Target target = this.findById(id);
+  public void updateByIdAndUserId(Integer userId, Integer id, String title, String description, Integer progressId) {
+    Target target = this.findTargetByIdAndUserId(userId, id);
+    Progress progress = new Progress();
+    progress.setId(progressId);
     target.setTitle(title);
     target.setDescription(description);
     target.setProgress(progress);
-    return this.targetMapper.update(target);
+    target.setLastUpdated(LocalDateTime.now());
+    this.targetMapper.update(target);
   }
 
-  public Integer deleteById(Integer id) {
-    Target target = this.findById(id);
-    target.setDeletedAt(LocalDateTime.now());
-    return this.targetMapper.delete(target);
+  public void deleteByIdAndUserId(Integer userId, Integer id) {
+    // ただnullチェック挟みたいだけ
+    Target target = this.findTargetByIdAndUserId(userId, id);
+    this.targetMapper.delete(target.getUserId(), target.getId());
   }
 }
