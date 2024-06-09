@@ -1,15 +1,14 @@
 package com.example.app.form;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import org.hibernate.validator.constraints.Range;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class TargetForm {
-  @NotBlank(message = "{0}は必須入力です")
+  @NotBlank(message = "Title must not be blank.")
   private String title;
   private String description;
-  @Min(0)
-  @Max(5)
+  @Range(min = 0, max = 5, message = "progressId must be in the range 0-5.")
   private Integer progressId;
 
   public String getTitle() {

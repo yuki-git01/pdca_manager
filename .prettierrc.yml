@@ -2,7 +2,7 @@ plugins:
   # プラグインを適用
   - prettier-plugin-java
 # optional: 最大幅の設定
-printWidth: 140
+printWidth: 100
 useTabs: false
 semi: true
 singleQuote: false

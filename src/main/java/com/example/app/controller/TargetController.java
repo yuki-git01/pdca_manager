@@ -3,7 +3,6 @@ package com.example.app.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.app.entity.Target;
 import com.example.app.form.TargetForm;
 import com.example.app.service.TargetService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = TargetController.BASE_URL)
@@ -43,17 +44,16 @@ public class TargetController {
 
   // create a target
   @PostMapping("/{userId}/create")
-  public void createTarget(@PathVariable("userId") Integer userId, @RequestBody @Validated TargetForm targetForm) {
+  public void createTarget(@PathVariable("userId") Integer userId, @Valid @RequestBody TargetForm targetForm) {
     this.targetService.save(userId, targetForm.getTitle(), targetForm.getDescription());
   }
 
   // update a target
   @PostMapping("/{userId}/edit/{id}")
   public void edit(@PathVariable("userId") Integer userId, @PathVariable("id") Integer id,
-      @RequestBody @Validated TargetForm targetForm) {
-    this.targetService.updateByIdAndUserId(
-        userId,
-        id, targetForm.getTitle(), targetForm.getDescription(),
+      @Valid @RequestBody TargetForm targetForm) {
+    this.targetService.updateByIdAndUserId(userId, id,
+        targetForm.getTitle(), targetForm.getDescription(),
         targetForm.getProgressId());
   }
 

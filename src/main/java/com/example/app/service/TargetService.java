@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.app.entity.Progress;
 import com.example.app.entity.Target;
+import com.example.app.error.NotFoundException;
 import com.example.app.mapper.TargetMapper;
 
 @Service
@@ -25,7 +24,7 @@ public class TargetService {
   public List<Target> findAllTargetListByUserId(Integer userId) {
     List<Target> targetList = this.targetMapper.findAllTargetListByUserId(userId);
     if (targetList.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found");
+      throw new NotFoundException("Targets not found one.");
     }
     return targetList;
   }
@@ -33,8 +32,8 @@ public class TargetService {
   public Target findTargetByIdAndUserId(Integer userId, Integer id) {
     List<Target> targetList = this.findAllTargetListByUserId(userId);
     Optional<Target> target = targetList.stream().filter(listInTarget -> listInTarget.getId() == id).findAny();
-    if (!target.isPresent()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found");
+    if (target.isEmpty()) {
+      throw new NotFoundException("Target is not found");
     }
     return target.get();
   }
