@@ -1,38 +1,100 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- mapperタグでMapperインターフェースと紐づける -->
 <mapper namespace="com.example.app.mapper.TargetMapper">
 	<resultMap type="com.example.app.entity.Target" id="TargetMap">
+
 		<id column="ID" property="id" />
 		<result column="USER_ID" property="userId" />
 		<result column="TITLE" property="title" />
 		<result column="DESCRIPTION" property="description" />
 		<result column="LAST_UPDATED" property="lastUpdated" />
+		<!-- Target.progress -->
 		<association property="progress" javaType="com.example.app.entity.Progress">
-			<id column="P_ID" property="id" />
-			<result column="STATUS" property="status" />
+			<id column="T_PID" property="id" />
+			<result column="T_STATUS" property="status" />
 		</association>
+		<!-- Target.processes -->
+		<collection property="processes" ofType="com.example.app.entity.Process">
+			<id column="PRCS_ID" property="id" />
+			<result column="PRCS_DESCRIPTION" property="description" />
+		<!-- Target.processes.kpi -->
+			<collection property="kpis" ofType="com.example.app.entity.Kpi">
+				<id column="K_ID" property="id" />
+				<result column="K_DESCRIPTION" property="description" />
+				<result column="K_DUE_DATE" property="due_date" />
+		<!-- Target.processes.kpi.progress -->
+				<association property="progress" javaType="com.example.app.entity.Progress">
+					<id column="K_PID" property="id" />
+					<result column="K_STATUS" property="status" />
+				</association>
+
+			</collection>
+		</collection>
 	</resultMap>
 
   <select id="findAllTargetListByUserId" resultMap="TargetMap">
   SELECT
-	T.ID
-	,T.TITLE
-	,T.DESCRIPTION
-	,T.LAST_UPDATED
-	,P.ID AS P_ID
-	,P.STATUS
-	FROM TARGETS T
-	INNER JOIN
-	PROGRESES P
-	ON T.PROGRESS_ID = P.ID
-	WHERE USER_ID = #{userId}
+		T.ID
+		,T.TITLE
+		,T.DESCRIPTION
+		,T.LAST_UPDATED
+		,PT.ID AS T_PID
+		,PT.STATUS AS T_STATUS
+		,PRCS.ID AS PRCS_ID
+		,PRCS.DESCRIPTION AS PRCS_DESCRIPTION
+		,K.ID AS K_ID
+		,K.DESCRIPTION AS K_DESCRIPTION
+		,K.DUE_DATE AS K_DUE_DATE
+		,PK.ID AS K_PID
+		,PK.STATUS AS K_STATUS
+	FROM
+		TARGETS T
+	LEFT OUTER JOIN
+		PROGRESES PT
+	ON
+		T.PROGRESS_ID = PT.ID
+	LEFT OUTER JOIN
+		PROCESSES PRCS
+	ON
+		T.ID = PRCS.TARGET_ID
+	LEFT OUTER JOIN
+		KPIS K
+	ON
+		PRCS.ID = K.PROCESS_ID
+	LEFT OUTER JOIN
+		PROGRESES PK
+	ON
+		K.PROGRESS_ID = PK.ID
+	WHERE
+		USER_ID = #{userId}
   </select>
 	<insert id="insert" useGeneratedKeys="true" keyColumn="ID" keyProperty="id">
-		INSERT INTO TARGETS (ID, USER_ID, TITLE, DESCRIPTION, PROGRESS_ID, LAST_UPDATED) VALUES (TARGET_ID_SEQ.nextval, #{userId}, #{title}, #{description}, #{progress.id}, #{lastUpdated})
+		INSERT INTO TARGETS (
+			ID
+			,USER_ID
+			,TITLE
+			,DESCRIPTION
+			,PROGRESS_ID
+			,LAST_UPDATED
+			)
+		VALUES (
+			TARGET_ID_SEQ.nextval
+			,#{userId}
+			,#{title}
+			,#{description}
+			,#{progress.id}
+			,#{lastUpdated}
+			)
 	</insert>
 	<update id="update">
-		UPDATE TARGETS SET TITLE = #{title}, DESCRIPTION = #{description}, PROGRESS_ID = #{progress.id}, LAST_UPDATED = #{lastUpdated} WHERE ID = #{id}
+		UPDATE TARGETS
+			SET
+				TITLE = #{title}
+				,DESCRIPTION = #{description}
+				,PROGRESS_ID = #{progress.id}
+				,LAST_UPDATED = #{lastUpdated}
+		WHERE
+			ID = #{id}
 	</update>
 	<delete id="delete">
 		DELETE FROM TARGETS WHERE ID = #{id}

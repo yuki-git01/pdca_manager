@@ -1,28 +1,30 @@
 package com.example.app.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Target {
-  private Integer id;
-  private Integer userId;
+  private int id;
+  private int userId;
   private String title;
   private String description;
   private Progress progress;
   private LocalDateTime lastUpdated;
+  private List<Process> processes;
 
-  public Integer getId() {
+  public int getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(int id) {
     this.id = id;
   }
 
-  public Integer getUserId() {
+  public int getUserId() {
     return userId;
   }
 
-  public void setUserId(Integer userId) {
+  public void setUserId(int userId) {
     this.userId = userId;
   }
 
@@ -56,6 +58,14 @@ public class Target {
 
   public void setLastUpdated(LocalDateTime lastUpdated) {
     this.lastUpdated = lastUpdated;
+  }
+
+  public List<Process> getProcesses() {
+    return processes;
+  }
+
+  public void setProcesses(List<Process> processes) {
+    this.processes = processes;
   }
 
 }
